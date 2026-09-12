@@ -1,0 +1,10 @@
+{
+  "name": "FreeScore",
+  "short_name": "FreeScore",
+  "description": "A mobile-first music stand for finding, practicing and organizing lawful music resources.",
+  "start_url": "/Freescore-/",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#171d2d",
+  "icons": []
+}
