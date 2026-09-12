@@ -1,18 +1,29 @@
 # FreeScore 🎵
 
-FreeScore is a mobile-first music practice web app for discovering, organizing, and practicing music from free and lawful sources.
+FreeScore is a mobile-first music stand for musicians. It combines discovery, chord practice, transposition, favorites and setlists while keeping copyrighted sheet music out of the repository.
 
-## Included in v0.1
-- Responsive Discover screen
-- Song search
-- Chords / lead sheets / piano categories
-- Favorites library
-- Setlist starter
-- Practice mode + BPM control
-- Song viewer
+## What is built
+- Responsive mobile-first React + TypeScript UI
+- Song/artist/chord search across the built-in catalog
+- Favorites stored locally in the browser
+- Setlists stored locally in the browser
+- Song reader/practice screen
 - Key transposition controls
-- Capo controls (UI foundation)
-- Copyright-aware content placeholder
+- Guitar chord cards and common chord shapes
+- BPM control
+- Practice progression and strumming guidance
+- Beginner / Easy mode toggle
+- Metronome control surface
+- Light/dark theme
+- MusicBrainz metadata search service foundation
+- PWA manifest
+- Vitest test foundation
+- GitHub Actions deployment workflow for GitHub Pages
+
+## Legal/content model
+FreeScore does **not** redistribute copyrighted sheet music or tabs. It is structured to show metadata and send users to lawful sources. Public-domain material, open-license material, user-provided material, or appropriately licensed content can be added later.
+
+MusicBrainz provides music metadata through its web service; its API supports artist, recording, release and work searches. See the official documentation before commercial use. 
 
 ## Run locally
 ```bash
@@ -20,13 +31,25 @@ npm install
 npm run dev
 ```
 
-Build for production with `npm run build`.
+Production build:
+```bash
+npm run build
+```
 
-## Roadmap
-1. Connect legal public-domain/open-license catalogs.
-2. Add real chord/tablature rendering and PDF viewing for authorized sources.
-3. Add capo calculator, chord diagrams, strumming patterns, metronome audio, and practice loops.
-4. Add accounts/sync and setlists.
-5. Package the web app as an installable PWA and prepare a native iOS build.
+Tests:
+```bash
+npm test
+```
 
-FreeScore should only display or import music that is public domain, openly licensed, user-provided, or otherwise authorized.
+## GitHub Pages
+The repository contains a deployment workflow. In GitHub, enable **Settings → Pages → GitHub Actions** for the repository. Vite's deployment guidance requires the repository path to be reflected in the app base URL when deploying under a project URL.
+
+## Next engineering targets
+- Connect additional public-domain/open-license catalogs.
+- Add authorized PDF/notation viewer support.
+- Add real metronome audio and tap-tempo.
+- Add capo calculator and alternate tuning tools.
+- Add richer chord diagrams and tablature rendering.
+- Add practice-loop recording and playback.
+- Add cloud sync/accounts and shareable setlists.
+- Package for iOS/Android after the web experience is stable.
