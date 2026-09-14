@@ -30,8 +30,6 @@ jobs:
           package-manager-cache: false
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Normalize fallback arrangement types
-        run: sed -i 's/setArr(a);setBpm(a.bpm);setSel(s=>s?{...s,key:a.key,bpm:a.bpm,chords:a.sections.flatMap(x=>x\[1\])}:s)}/setArr({...a,sections:a.sections.map(([name,chords])=>({name,chords}))});setBpm(a.bpm);setSel(s=>s?{...s,key:a.key,bpm:a.bpm,chords:a.sections.flatMap(x=>x[1])}:s)}/' src/main.tsx
       - name: Build
         run: npm run build
       - name: Configure Pages
