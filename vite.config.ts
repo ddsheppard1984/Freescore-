@@ -3,5 +3,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/Freescore-/',
+  // GitHub Pages serves the app from /Freescore-/; Vercel serves it from /.
+  base: process.env.VERCEL ? '/' : '/Freescore-/',
 });
