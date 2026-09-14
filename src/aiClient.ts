@@ -1,6 +1,6 @@
 export type GeneratedArrangement={title:string;artist:string;key:string;bpm:number;capo:number;difficulty:'Easy'|'Standard';sections:{name:string;chords:string[]}[]};
 
-const API_URL=(import.meta.env.VITE_AI_API_URL||'/api/generate') as string;
+const API_URL='/api/generate';
 
 export async function generateWithAI(query:string,artist='',genre='Pop'):Promise<GeneratedArrangement>{
   const response=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query,artist,genre})});
