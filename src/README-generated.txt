@@ -1,0 +1,1 @@
+FreeScore now automatically creates an original chord arrangement when a Top 100 song is opened. This is intentionally chord-only for copyrighted songs; copyrighted lyrics/tabs are not copied into the app.
