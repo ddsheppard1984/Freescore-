@@ -1,0 +1,1 @@
+export const arrangementInfo='FreeScore automatically generates an original chord arrangement for songs in its catalog. It does not copy copyrighted lyrics, tabs, or sheet music.';
