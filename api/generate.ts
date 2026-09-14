@@ -12,10 +12,11 @@ function textFromResponse(data:any){
 export default async function handler(req:RequestLike,res:ResponseLike){
   res.setHeader('Access-Control-Allow-Origin','*');
   res.setHeader('Access-Control-Allow-Headers','Content-Type');
-  res.setHeader('Access-Control-Allow-Methods','POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');
   if(req.method==='OPTIONS')return res.status(204).json({});
-  if(req.method!=='POST')return res.status(405).json({error:'POST required'});
   const apiKey=process.env.OPENAI_API_KEY;
+  if(req.method==='GET')return res.status(apiKey?200:503).json({ok:Boolean(apiKey),service:'FreeScore AI',openaiKeyConfigured:Boolean(apiKey),message:apiKey?'AI backend is configured and reachable.':'OPENAI_API_KEY is not configured in this Vercel environment.'});
+  if(req.method!=='POST')return res.status(405).json({error:'POST required'});
   if(!apiKey)return res.status(503).json({error:'OPENAI_API_KEY is not configured'});
   const body=(req.body||{}) as {query?:string;artist?:string;genre?:string;difficulty?:string};
   const query=String(body.query||'').trim();
@@ -30,6 +31,7 @@ export default async function handler(req:RequestLike,res:ResponseLike){
     const data=await openai.json();
     if(!openai.ok)return res.status(502).json({error:'OpenAI request failed',detail:data?.error?.message||'Unknown error'});
     const text=textFromResponse(data);
+    if(!text)return res.status(502).json({error:'OpenAI returned no arrangement'});
     const arrangement=JSON.parse(text);
     return res.status(200).json(arrangement);
   }catch(error){
