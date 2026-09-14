@@ -1,6 +1,7 @@
 import React,{useEffect,useMemo,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import './styles.css';
+import './generatedStyles.css';
 
 type Song={id:string;title:string;artist:string;key:string;bpm:number;type:string;source:string;url:string;chords:string[];difficulty:'Easy'|'Medium'|'Advanced';publicDomain?:boolean;lyrics?:string[];popular?:boolean};
 type Popular={title:string;artist:string;genre:string};
