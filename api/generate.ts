@@ -1,7 +1,7 @@
 type RequestLike={method?:string;body?:unknown};
 type ResponseLike={status:(n:number)=>ResponseLike;setHeader:(k:string,v:string)=>void;json:(v:unknown)=>void};
 
-const schema={type:'object',additionalProperties:false,properties:{title:{type:'string'},artist:{type:'string'},key:{type:'string'},bpm:{type:'integer'},capo:{type:'integer'},difficulty:{type:'string',enum:['Easy','Standard']},sections:{type:'array',items:{type:'object',additionalProperties:false,properties:{name:{type:'string'},chords:{type:'array',items:{type:'string'}}},required:['name','chords']}}},required:['title','artist','key','bpm','capo','difficulty','sections']};
+const schema={type:'object',additionalProperties:false,properties:{title:{type:'string'},artist:{type:'string'},key:{type:'string'},bpm:{type:'integer'},capo:{type:'integer'},difficulty:{type:'string',enum:['Easy','Standard']},strum:{type:'string'},sections:{type:'array',items:{type:'object',additionalProperties:false,properties:{name:{type:'string'},chords:{type:'array',items:{type:'string'}}},required:['name','chords']}}},required:['title','artist','key','bpm','capo','difficulty','strum','sections']};
 
 function textFromResponse(data:any){
   if(typeof data?.output_text==='string')return data.output_text;
@@ -17,15 +17,16 @@ export default async function handler(req:RequestLike,res:ResponseLike){
   if(req.method!=='POST')return res.status(405).json({error:'POST required'});
   const apiKey=process.env.OPENAI_API_KEY;
   if(!apiKey)return res.status(503).json({error:'OPENAI_API_KEY is not configured'});
-  const body=(req.body||{}) as {query?:string;artist?:string;genre?:string};
+  const body=(req.body||{}) as {query?:string;artist?:string;genre?:string;difficulty?:string};
   const query=String(body.query||'').trim();
   if(!query)return res.status(400).json({error:'Song query is required'});
   const artist=String(body.artist||'').trim();
   const genre=String(body.genre||'Pop');
-  const instructions=`You are FreeScore AI, a guitar-arrangement assistant. Create a useful chord chart for the requested song using your musical knowledge. Return only the structured arrangement requested by the schema. Do not reproduce copyrighted lyrics, tabs, sheet music, or other protected text. Chords and short section labels are okay. If the user asks for lyrics, explain through the UI that FreeScore cannot provide copyrighted lyrics; do not include them. Prefer common playable open/standard guitar chords, a practical capo when useful, and 5-8 sections. The result is a practice arrangement, not an official transcription. Be musically plausible and concise.`;
-  const user=`Song query: ${query}\nArtist if known: ${artist||'unknown'}\nGenre hint: ${genre}`;
+  const difficulty=body.difficulty==='Standard'?'Standard':'Easy';
+  const instructions=`You are FreeScore AI, a guitar-arrangement assistant. Create a useful chord chart for the requested song using your musical knowledge. Return only the structured arrangement requested by the schema. Do not reproduce copyrighted lyrics, tabs, sheet music, or other protected text. Chords and short section labels are okay. Never invent or output copyrighted lyrics. Prefer common playable open/standard guitar chords and a practical capo. Build 5-8 clearly named sections such as Intro, Verse, Pre-Chorus, Chorus, Bridge, and Outro when musically appropriate. Give a concise strumming pattern. The requested difficulty is ${difficulty}; Easy means fewer chord changes and beginner-friendly shapes, Standard can use richer but still practical changes. The result is a practice arrangement, not an official transcription. Be musically plausible and concise.`;
+  const user=`Song query: ${query}\nArtist if known: ${artist||'unknown'}\nGenre hint: ${genre}\nDifficulty: ${difficulty}`;
   try{
-    const openai=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},body:JSON.stringify({model:'gpt-5.6-luna',store:false,instructions,input:user,text:{format:{type:'json_schema',name:'freescore_arrangement',strict:true,schema}},max_output_tokens:1200})});
+    const openai=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},body:JSON.stringify({model:'gpt-5.6-luna',store:false,instructions,input:user,text:{format:{type:'json_schema',name:'freescore_arrangement',strict:true,schema}},max_output_tokens:1400})});
     const data=await openai.json();
     if(!openai.ok)return res.status(502).json({error:'OpenAI request failed',detail:data?.error?.message||'Unknown error'});
     const text=textFromResponse(data);
